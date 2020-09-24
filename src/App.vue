@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <Header/>
-    <router-view/>
-    <Footer/>
+    <Header :isLoggedIn="isLoggedIn"/>
+    <router-view :isLoggedIn="isLoggedIn"/>
+    <Footer :isLoggedIn="isLoggedIn"/>
   </div>
 </template>
 
@@ -10,7 +10,22 @@
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 export default {
-  components: {Header, Footer}
+  components: {Header, Footer},
+  data(){
+    return {
+      isLoggedIn: null
+    }
+  },
+  created(){
+    this.unwatch = this.$store.watch((state, getters) => {return getters.isLoggedIn}, (current, previous) => {
+      console.log('logged in status was: ' + previous + '\nnow the logged in status is: ' + current)
+      this.isLoggedIn = current
+    })
+    this.$store.dispatch('startUpApp')
+  },
+  beforeDestroy(){
+    this.unwatch()
+  }
 }
 </script>
 
