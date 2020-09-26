@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <Header :isLoggedIn="isLoggedIn"/>
-    <router-view :isLoggedIn="isLoggedIn"/>
-    <Footer :isLoggedIn="isLoggedIn"/>
+    <Header :isLoggedIn="isLoggedIn" class="mb-5"/>
+    <router-view :isLoggedIn="isLoggedIn" class="my-5"/>
+    <Footer :isLoggedIn="isLoggedIn" class="mt-5"/>
   </div>
 </template>
 
@@ -49,5 +49,31 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.messageData {
+  border: 2px black solid;
+}
+.textData {
+  background-color: rgb(255, 244, 239);
+  /* background-color: rgb(240, 255, 246); */
+}
+.commentsData {
+  background-color: rgb(240, 255, 246);
+}
+.buttonPara > .buttonData {
+  padding: 2px 2px;
+}
+.commentBox {
+background-color: aliceblue;
+}
+.commentsBox {
+  /* background-color: rgb(240, 255, 246); */
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+.paginateBox {
+  /* background-color: rgb(255, 244, 239); */
+  background-color: rgb(255, 244, 239);
 }
 </style>
