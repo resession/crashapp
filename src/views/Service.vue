@@ -4,7 +4,8 @@
           <b-col>
             <b-tabs>
                 <b-tab title="Terms and Conditions" active>
-<h1>Website Terms and Conditions of Use</h1>
+<!-- <h1>Website Terms and Conditions of Use</h1> -->
+<h1>Terms and Conditions</h1>
 
 <h2>1. Terms</h2>
 
@@ -53,7 +54,8 @@
 <p>Any claim related to Krasher's Website shall be governed by the laws of af without regards to its conflict of law provisions.</p>
                 </b-tab>
                 <b-tab title="Disclaimer">
-<h1>Disclaimer for Krasher</h1>
+<!-- <h1>Disclaimer for Krasher</h1> -->
+<h1>Disclaimer</h1>
 
 <p>If you require any more information or have any questions about our site's disclaimer, please feel free to contact us by email at contact@krasher.site. Our Disclaimer was generated with the help of the <a href="https://www.disclaimergenerator.net/">Disclaimer Generator</a>.</p>
 

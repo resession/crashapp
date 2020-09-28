@@ -8,6 +8,7 @@
         <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-text v-if="!isLoggedIn">login or login to see the panel</b-nav-text>
+          <b-nav-text v-if="isLoggedIn">panel coming soon</b-nav-text>
           <!-- <b-nav-item :to="{name: 'Feed'}" v-if="isLoggedIn">Feed</b-nav-item> -->
           <!-- <b-nav-item :to="{name: 'Page'}" v-if="isLoggedIn">Page</b-nav-item> -->
           <b-nav-text v-if="feedback.signup">{{feedback.signup}}</b-nav-text>
