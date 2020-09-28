@@ -1,15 +1,15 @@
 <template>
   <b-container fluid>
     <b-navbar toggleable="lg" type="light" variant="light">
-        <b-navbar-brand :to="{name: 'Home'}">NavBar</b-navbar-brand>
+        <b-navbar-brand :to="{name: 'Home'}">Krasher</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-text v-if="!isLoggedIn">login or login to see the panel</b-nav-text>
-          <b-nav-item :to="{name: 'Feed'}" v-if="isLoggedIn">Feed</b-nav-item>
-          <b-nav-item :to="{name: 'Page'}" v-if="isLoggedIn">Page</b-nav-item>
+          <!-- <b-nav-item :to="{name: 'Feed'}" v-if="isLoggedIn">Feed</b-nav-item> -->
+          <!-- <b-nav-item :to="{name: 'Page'}" v-if="isLoggedIn">Page</b-nav-item> -->
           <b-nav-text v-if="feedback.signup">{{feedback.signup}}</b-nav-text>
           <b-nav-text v-if="registerData.key" class="mx-2"><span style="font-size: 16px;color: black;">SAVE YOUR KEY/PASSWORD, REMOVING IN {{registerData.sec}}:</span><span style="font-size: 12px;color: black;" class="mx-2">{{registerData.key}}</span></b-nav-text>
         </b-navbar-nav>
