@@ -156,6 +156,7 @@ export default {
           this.textTags = ''
           this.typedData = res.data
           // this.messagesToggle('newest')
+          this.getMessages(this.routePath, this.messagePage, this.messageLimit)
         }).catch(error => {
           this.textData = ''
           console.log(error)
