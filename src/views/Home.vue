@@ -194,6 +194,7 @@ export default {
     submitHashData(){
       if(this.hashData){
         this.$http.get('/message/hash/' + this.hashData).then(res => {
+          this.postError = ''
           this.hashData = ''
           // this.show.comment = false
           // this.show.comments = false
