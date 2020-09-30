@@ -9,6 +9,11 @@
         </b-form>
       </b-col>
     </b-row>
+    <b-row v-if="postError">
+      <b-col>
+        <p style="font-size: 24px;font-weight: bold;">{{postError}}</p>
+      </b-col>
+    </b-row>
     <b-row v-if="postData" align-h="center">
         <b-col class="messageData" cols="6">
           <b-row>
@@ -107,6 +112,7 @@ export default {
   data(){
     return {
       postData: null,
+      postError: '',
       hashData: '',
       commentData: '',
       commentsData: null,
@@ -197,7 +203,12 @@ export default {
             this.getHashDataComments(1, 10)
           }
         }).catch(error => {
+          this.postData = null
+          this.postError = 'did not find any post with that hash'
           this.hashData = ''
+          setTimeout(() => {
+            this.postError = ''
+          }, 5000)
           console.log(error)
           this.feedback.hashFeedback = 'error, try again next time'
           setTimeout(() => {
