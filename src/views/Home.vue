@@ -9,9 +9,9 @@
         </b-form>
       </b-col>
     </b-row>
-    <b-row v-if="postError">
+    <b-row v-if="feedback.hash">
       <b-col>
-        <p style="font-size: 24px;font-weight: bold;">{{postError}}</p>
+        <p style="font-size: 24px;font-weight: bold;">{{feedback.hash}}</p>
       </b-col>
     </b-row>
     <b-row v-if="postData" align-h="center">
@@ -112,14 +112,13 @@ export default {
   data(){
     return {
       postData: null,
-      postError: '',
       hashData: '',
       commentData: '',
       commentsData: null,
       textData: '',
       textTags: '',
       typedData: null,
-      feedback: {comment: '', comments: ''},
+      feedback: {comment: '', comments: '', hash: ''},
       show: {comment: false, comments: false},
       commentPage: 1,
       commentLimit: 10,
@@ -194,7 +193,6 @@ export default {
     submitHashData(){
       if(this.hashData){
         this.$http.get('/message/hash/' + this.hashData).then(res => {
-          this.postError = ''
           this.hashData = ''
           // this.show.comment = false
           // this.show.comments = false
@@ -204,16 +202,12 @@ export default {
             this.getHashDataComments(1, 10)
           }
         }).catch(error => {
-          this.postData = null
-          this.postError = 'did not find any post with that hash'
           this.hashData = ''
-          setTimeout(() => {
-            this.postError = ''
-          }, 5000)
+          this.postData = null
           console.log(error)
-          this.feedback.hashFeedback = 'error, try again next time'
+          this.feedback.hash = 'did not find any post with that hash'
           setTimeout(() => {
-            this.feedback.hashFeedback = ''
+            this.feedback.hash = ''
           }, 4000)
         })
       }
