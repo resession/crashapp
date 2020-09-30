@@ -156,7 +156,7 @@ export default {
     },
     submitText(){
       if(this.textData){
-        this.$http.post('/message/submit', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.textData, tags: this.textTags}).then(res => {
+        this.$http.post('/datahash/submit', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.textData, tags: this.textTags}).then(res => {
           this.textData = ''
           this.textTags = ''
           this.typedData = res.data
@@ -173,7 +173,7 @@ export default {
       }
     },
     getMessages(routePath, page, limit){
-        this.$http.get('/message/' + routePath + '/' + page + '/' + limit).then(res => {
+        this.$http.get('/datahash/' + routePath + '/' + page + '/' + limit).then(res => {
           this.messagesData = res.data
         }).catch(error => {
           console.log(error)
@@ -192,7 +192,7 @@ export default {
     },
     submitHashData(){
       if(this.hashData){
-        this.$http.get('/message/hash/' + this.hashData).then(res => {
+        this.$http.get('/datahash/hash/' + this.hashData).then(res => {
           this.hashData = ''
           // this.show.comment = false
           // this.show.comments = false
@@ -214,7 +214,7 @@ export default {
     },
     submitComment(){
       if(this.commentData){
-        this.$http.post('/comment/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, message: this.postData.hash}).then(res => {
+        this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, message: this.postData.hash}).then(res => {
           this.commentData = ''
           this.getHashDataComments(1, 10)
         }).catch(error => {
@@ -228,7 +228,7 @@ export default {
       }
     },
     getHashDataComments(page, limit){
-      this.$http.get('/comment/message/' + this.postData.hash + '/' + this.commentPage + '/' + this.commentLimit).then(res => {
+      this.$http.get('/comment/id/' + this.postData.hash + '/' + this.commentPage + '/' + this.commentLimit).then(res => {
         this.commentsData = res.data
       }).catch(error => {
           console.log(error)

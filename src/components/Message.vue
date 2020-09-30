@@ -64,7 +64,7 @@ export default {
     methods: {
         submitComment(){
             if(this.commentData){
-                this.$http.post('/comment/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, message: this.message.hash}).then(res => {
+                this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, message: this.message.hash}).then(res => {
                     this.commentData = ''
                     this.$emit('commented', res.data)
                     this.getComments(1, 10)
@@ -79,7 +79,7 @@ export default {
             }
         },
         getComments(page, limit){
-            this.$http.get('/comment/message/' + this.message.hash + '/' + page + '/' + limit).then(res => {
+            this.$http.get('/comment/id/' + this.message.hash + '/' + page + '/' + limit).then(res => {
                 this.commentsData = res.data
             }).catch(error => {
                 console.log(error)
