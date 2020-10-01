@@ -13,7 +13,7 @@
             </b-row>
             <b-row v-if="show.comment">
                 <b-col class="commentBox">
-                    <b-form @submit.prevent="submitComment" class="my-2">
+                    <b-form @submit.prevent="recaptchaSubmitComment('comment')" class="my-2">
                         <b-form-textarea id="textarea" v-model="commentData" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
                         <b-button type="submit" class="my-2">submit</b-button>
                     </b-form>
@@ -62,7 +62,8 @@ export default {
         }
     },
     methods: {
-        async recaptcha(data){
+        async recaptchaSubmitComment(data){
+            if(this.commentData){
             // (optional) Wait until recaptcha has been loaded.
             await this.$recaptchaLoaded()
 
@@ -71,22 +72,22 @@ export default {
             return await this.$recaptcha(data)
 
             // Do stuff with the received token.
-        },
-        submitComment(){
-            if(this.commentData){
-                this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.datahash.hash}).then(res => {
-                    this.commentData = ''
-                    this.$emit('commented', res.data)
-                    this.getComments(1, 10)
-                }).catch(error => {
-                    this.commentData = ''
-                    console.log(error)
-                    this.feedback.comment = 'error, try again next time'
-                    setTimeout(() => {
-                        this.feedback.comment = ''
-                    }, 4000)
-                })
+            this.submitComment(token)
             }
+        },
+        submitComment(token){
+            this.$http.post('/comment/hash/text', {token, key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.datahash.hash}).then(res => {
+                this.commentData = ''
+                this.$emit('commented', res.data)
+                this.getComments(1, 10)
+            }).catch(error => {
+                this.commentData = ''
+                console.log(error)
+                this.feedback.comment = 'error, try again next time'
+                setTimeout(() => {
+                    this.feedback.comment = ''
+                }, 4000)
+            })
         },
         getComments(page, limit){
             this.$http.get('/comment/id/' + this.datahash.hash + '/' + page + '/' + limit).then(res => {

@@ -22,11 +22,11 @@
           <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
           </b-nav-form>
-          <b-nav-form class="mx-1" @submit.prevent="submitLoginKey" v-if="!isLoggedIn">
+          <b-nav-form class="mx-1" @submit.prevent="recaptchaLogin('login')" v-if="!isLoggedIn">
           <b-form-input size="sm" class="mr-sm-2" v-model="loginKey" placeholder="Key"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Login</b-button>
           </b-nav-form>
-          <b-nav-form class="mx-1" @submit.prevent="submitRegister" v-if="!isLoggedIn">
+          <b-nav-form class="mx-1" @submit.prevent="recaptchaRegister('register')" v-if="!isLoggedIn">
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Register</b-button>
           </b-nav-form>
           <b-nav-form @submit.prevent="onSubmitLogout" v-if="isLoggedIn">
@@ -62,15 +62,27 @@ export default {
     }
   },
   methods: {
-    async recaptcha(data){
+    async recaptchaRegister(data){
       // (optional) Wait until recaptcha has been loaded.
       await this.$recaptchaLoaded()
 
       // Execute reCAPTCHA with action "login".
-      // const token = await this.$recaptcha('login')
-      return await this.$recaptcha(data)
+      const token = await this.$recaptcha(data)
 
       // Do stuff with the received token.
+      this.submitRegister(token)
+    },
+    async recaptchaLogin(data){
+      if(this.loginKey){
+        // (optional) Wait until recaptcha has been loaded.
+        await this.$recaptchaLoaded()
+
+        // Execute reCAPTCHA with action "login".
+        const token = await this.$recaptcha(data)
+
+        // Do stuff with the received token.
+        this.submitLoginKey(token)
+      }
     },
     submitSearch(){
       console.log('pressed search')
@@ -90,8 +102,8 @@ export default {
     getSecondsPromise(sec){
       return new Promise(resolve => setTimeout(resolve, sec))
     },
-    submitRegister(){
-      this.$http.post('/user/register', {token: this.recaptcha('register')}).then(res => {
+    submitRegister(token){
+      this.$http.post('/user/register', {token}).then(res => {
         this.showPassKey(res.data.key)
         this.$store.dispatch('signup', res.data.key)
       }).catch(error => {
@@ -102,19 +114,17 @@ export default {
         }, 4000)
       })
     },
-    submitLoginKey(){
-      if(this.loginKey){
-        this.$http.post('/user/login', {token: this.recaptcha('login')}).then(res => {
-          this.$store.dispatch('login', this.loginKey)
-          this.loginKey = ''
-        }).catch(error => {
-          console.log(error)
-          this.feedback.login = 'there was an error, could not log in, try again later'
-          setTimeout(() => {
-            this.feedback.login = ''
-          }, 4000)
-        })
-      }
+    submitLoginKey(token){
+      this.$http.post('/user/login', {token}).then(res => {
+        this.$store.dispatch('login', this.loginKey)
+        this.loginKey = ''
+      }).catch(error => {
+        console.log(error)
+        this.feedback.login = 'there was an error, could not log in, try again later'
+        setTimeout(() => {
+          this.feedback.login = ''
+        }, 4000)
+      })
     }
   }
 }
