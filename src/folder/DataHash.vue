@@ -77,7 +77,7 @@
     <b-col>
       <b-row>
         <b-col>
-          <p style="font-size: 24px;font-weight: bold;">Posts</p>
+          <p style="font-size: 24px;font-weight: bold;">Hashes</p>
         </b-col>
       </b-row>
       <b-row align-h="center">
