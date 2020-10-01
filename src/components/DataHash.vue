@@ -1,14 +1,14 @@
 <template>
     <b-row align-h="center">
-        <b-col class="messageData" cols="6">
+        <b-col class="datahashData" cols="6">
             <b-row>
                 <b-col class="textData">
-                    <p style="font-size: 24px;">hash: {{message.hash}}</p>
-                    <p style="font-size: 24px;">{{message.text}}</p>
-                    <p v-if="message.tags.length"><span v-for="(tag, index) in message.tags" :key="index" class="mx-2">{{tag}}</span></p>
-                    <!-- <p>{{new Date(message.created)}}</p> -->
-                    <p>hashed by: <span v-if="message.user === 'anon'">{{message.user}}</span><span style="font-size: 6px;" v-else>{{message.user}}</span></p>
-                    <p><b-button type="button" @click="show.comment = !show.comment">comment</b-button>: <span v-if="message.comments"><b-button type="button" @click="showComments">{{message.comments}}</b-button></span><span v-else>{{message.comments}}</span> | posted: {{message.posted}}</p>
+                    <p style="font-size: 24px;">hash: {{datahash.hash}}</p>
+                    <p style="font-size: 24px;">{{datahash.text}}</p>
+                    <p v-if="datahash.tags.length"><span v-for="(tag, index) in datahash.tags" :key="index" class="mx-2">{{tag}}</span></p>
+                    <!-- <p>{{new Date(datahash.created)}}</p> -->
+                    <p>hashed by: <span v-if="datahash.user === 'anon'">{{datahash.user}}</span><span style="font-size: 6px;" v-else>{{datahash.user}}</span></p>
+                    <p><b-button type="button" @click="show.comment = !show.comment">comment</b-button>: <span v-if="datahash.comments"><b-button type="button" @click="showComments">{{datahash.comments}}</b-button></span><span v-else>{{datahash.comments}}</span> | posted: {{datahash.posted}}</p>
                 </b-col>
             </b-row>
             <b-row v-if="show.comment">
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-    props: ['message'],
+    props: ['datahash'],
     data(){
         return {
             commentData: '',
@@ -64,7 +64,7 @@ export default {
     methods: {
         submitComment(){
             if(this.commentData){
-                this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, message: this.message.hash}).then(res => {
+                this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.datahash.hash}).then(res => {
                     this.commentData = ''
                     this.$emit('commented', res.data)
                     this.getComments(1, 10)
@@ -79,7 +79,7 @@ export default {
             }
         },
         getComments(page, limit){
-            this.$http.get('/comment/id/' + this.message.hash + '/' + page + '/' + limit).then(res => {
+            this.$http.get('/comment/id/' + this.datahash.hash + '/' + page + '/' + limit).then(res => {
                 this.commentsData = res.data
             }).catch(error => {
                 console.log(error)

@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import Header from './components/Header.vue'
-import Footer from './components/Footer.vue'
+import Header from './main/Header.vue'
+import Footer from './main/Footer.vue'
 export default {
   components: {Header, Footer},
   data(){
@@ -54,7 +54,7 @@ export default {
   color: #42b983;
 }
 
-.messageData {
+.datahashData {
   border: 2px black solid;
 }
 .textData {
