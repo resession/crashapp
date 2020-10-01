@@ -11,6 +11,7 @@
           <b-nav-text v-if="isLoggedIn">panel coming soon</b-nav-text>
           <!-- <b-nav-item :to="{name: 'Feed'}" v-if="isLoggedIn">Feed</b-nav-item> -->
           <!-- <b-nav-item :to="{name: 'Page'}" v-if="isLoggedIn">Page</b-nav-item> -->
+          <b-nav-text v-if="feedback.login">{{feedback.login}}</b-nav-text>
           <b-nav-text v-if="feedback.signup">{{feedback.signup}}</b-nav-text>
           <b-nav-text v-if="registerData.key" class="mx-2"><span style="font-size: 16px;color: black;">SAVE YOUR KEY/PASSWORD, REMOVING IN {{registerData.sec}}:</span><span style="font-size: 12px;color: black;" class="mx-2">{{registerData.key}}</span></b-nav-text>
         </b-navbar-nav>
@@ -21,17 +22,17 @@
           <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
           </b-nav-form>
-            <b-nav-form class="mx-1" @submit.prevent="submitLoginKey" v-if="!isLoggedIn">
-            <b-form-input size="sm" class="mr-sm-2" v-model="loginKey" placeholder="Key"></b-form-input>
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">Login</b-button>
-            </b-nav-form>
-            <b-nav-form class="mx-1" @submit.prevent="submitRegister" v-if="!isLoggedIn">
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">Register</b-button>
-            </b-nav-form>
-            <b-nav-form @submit.prevent="onSubmitLogout" v-if="isLoggedIn">
-            <!-- <b-nav-text>testing things out</b-nav-text> -->
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">Logout</b-button>
-            </b-nav-form>
+          <b-nav-form class="mx-1" @submit.prevent="submitLoginKey" v-if="!isLoggedIn">
+          <b-form-input size="sm" class="mr-sm-2" v-model="loginKey" placeholder="Key"></b-form-input>
+          <b-button size="sm" class="my-2 my-sm-0" type="submit">Login</b-button>
+          </b-nav-form>
+          <b-nav-form class="mx-1" @submit.prevent="submitRegister" v-if="!isLoggedIn">
+          <b-button size="sm" class="my-2 my-sm-0" type="submit">Register</b-button>
+          </b-nav-form>
+          <b-nav-form @submit.prevent="onSubmitLogout" v-if="isLoggedIn">
+          <!-- <b-nav-text>testing things out</b-nav-text> -->
+          <b-button size="sm" class="my-2 my-sm-0" type="submit">Logout</b-button>
+          </b-nav-form>
 
             <!-- <b-nav-item-dropdown text="Lang" right>
             <b-dropdown-item href="#">EN</b-dropdown-item>
@@ -57,10 +58,20 @@ export default {
     return {
       loginKey: '',
       registerData: {sec: null, key: null},
-      feedback: {signup: ''}
+      feedback: {signup: '', login: ''}
     }
   },
   methods: {
+    async recaptcha(data){
+      // (optional) Wait until recaptcha has been loaded.
+      await this.$recaptchaLoaded()
+
+      // Execute reCAPTCHA with action "login".
+      // const token = await this.$recaptcha('login')
+      return await this.$recaptcha(data)
+
+      // Do stuff with the received token.
+    },
     submitSearch(){
       console.log('pressed search')
     },
@@ -80,7 +91,7 @@ export default {
       return new Promise(resolve => setTimeout(resolve, sec))
     },
     submitRegister(){
-      this.$http.get('/user/new').then(res => {
+      this.$http.post('/user/register', {token: this.recaptcha('register')}).then(res => {
         this.showPassKey(res.data.key)
         this.$store.dispatch('signup', res.data.key)
       }).catch(error => {
@@ -93,7 +104,16 @@ export default {
     },
     submitLoginKey(){
       if(this.loginKey){
-        this.$store.dispatch('login', this.loginKey)
+        this.$http.post('/user/login', {token: this.recaptcha('login')}).then(res => {
+          this.$store.dispatch('login', this.loginKey)
+          this.loginKey = ''
+        }).catch(error => {
+          console.log(error)
+          this.feedback.login = 'there was an error, could not log in, try again later'
+          setTimeout(() => {
+            this.feedback.login = ''
+          }, 4000)
+        })
       }
     }
   }

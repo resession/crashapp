@@ -148,13 +148,13 @@ export default {
     }
   },
   methods: {
-    async recaptcha(){
+    async recaptcha(data){
       // (optional) Wait until recaptcha has been loaded.
       await this.$recaptchaLoaded()
 
       // Execute reCAPTCHA with action "login".
       // const token = await this.$recaptcha('login')
-      return await this.$recaptcha('login')
+      return await this.$recaptcha(data)
 
       // Do stuff with the received token.
     },
@@ -168,7 +168,7 @@ export default {
     },
     submitText(){
       if(this.textData){
-        this.$http.post('/datahash/submit', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.textData, tags: this.textTags, token: this.recaptcha()}).then(res => {
+        this.$http.post('/datahash/submit', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.textData, tags: this.textTags, token: this.recaptcha('hash')}).then(res => {
           this.textData = ''
           this.textTags = ''
           this.typedData = res.data
@@ -226,7 +226,7 @@ export default {
     },
     submitComment(){
       if(this.commentData){
-        this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.postData.hash, token: this.recaptcha()}).then(res => {
+        this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.postData.hash}).then(res => {
           this.commentData = ''
           this.getHashDataComments(1, 10)
         }).catch(error => {

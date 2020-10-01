@@ -62,6 +62,16 @@ export default {
         }
     },
     methods: {
+        async recaptcha(data){
+            // (optional) Wait until recaptcha has been loaded.
+            await this.$recaptchaLoaded()
+
+            // Execute reCAPTCHA with action "login".
+            // const token = await this.$recaptcha('login')
+            return await this.$recaptcha(data)
+
+            // Do stuff with the received token.
+        },
         submitComment(){
             if(this.commentData){
                 this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.datahash.hash}).then(res => {
