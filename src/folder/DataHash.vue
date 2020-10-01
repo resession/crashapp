@@ -198,8 +198,9 @@ export default {
     },
     commented(e){
       for(let i = 0;i < this.datahashesData.docs.length;i++){
-        if(this.datahashesData.docs[i].hash === e.datahash){
-          this.datahashesData.docs[i].comments = this.datahashesData.docs[i].comments + 1
+        if(this.datahashesData.docs[i].hash === e.hash){
+          // this.datahashesData.docs[i].comments = this.datahashesData.docs[i].comments + 1
+          this.datahashesData.docs[i].comments = e.comments
         }
       }
     },
@@ -240,6 +241,7 @@ export default {
     submitComment(token){
       this.$http.post('/comment/hash/text', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.commentData, id: this.postData.hash, token}).then(res => {
         this.commentData = ''
+        this.postData = res.data
         this.getHashDataComments(1, 10)
       }).catch(error => {
         this.commentData = ''
@@ -251,7 +253,7 @@ export default {
       })
     },
     getHashDataComments(page, limit){
-      this.$http.get('/comment/id/' + this.postData.hash + '/' + this.commentPage + '/' + this.commentLimit).then(res => {
+      this.$http.get('/comment/id/' + this.postData.hash + '/' + page + '/' + limit).then(res => {
         this.commentsData = res.data
       }).catch(error => {
           console.log(error)
