@@ -58,7 +58,7 @@
   <b-row align-h="center">
     <b-col cols="6">
       <p style="font-size: 24px;font-weight: bold;">post something</p>
-      <b-form @submit.prevent="submitText">
+      <b-form @submit.prevent="recaptchaSubmitText('hash')">
           <b-form-textarea id="textarea" v-model="textData" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
           <b-form-input v-model="textTags" placeholder="OPTIONAL - keyword1,keyword2 - no spaces - 100 char limit" class="my-2" maxlength="100"></b-form-input>
           <b-button type="submit">submit</b-button>
@@ -107,7 +107,7 @@ import axios from 'axios'
 export default {
   name: 'Home',
   created(){
-    // setInterval(() => {console.log(this.datahashesData)},3000)
+    // setTimeout(() => {console.log(this.getRecaptcha('test'))},3000)
     this.getDataHashes(this.routePath, this.datahashPage, this.datahashLimit)
   },
   props: ['isLoggedIn'],
@@ -148,15 +148,17 @@ export default {
     }
   },
   methods: {
-    async recaptcha(data){
-      // (optional) Wait until recaptcha has been loaded.
-      await this.$recaptchaLoaded()
+    async recaptchaSubmitText(data){
+      if(this.textData){
+        // (optional) Wait until recaptcha has been loaded.
+        await this.$recaptchaLoaded()
+        // Execute reCAPTCHA with action "login".
+        const token = await this.$recaptcha(data)
+        // return await this.$recaptcha(data)
 
-      // Execute reCAPTCHA with action "login".
-      // const token = await this.$recaptcha('login')
-      return await this.$recaptcha(data)
-
-      // Do stuff with the received token.
+        // Do stuff with the received token.
+        this.submitText(token)
+      }
     },
     datahashesToggle(data){
       this.routePath = data
@@ -166,23 +168,21 @@ export default {
         this.getDataHashes(this.routePath, this.datahashPage, this.datahashLimit)
       }
     },
-    submitText(){
-      if(this.textData){
-        this.$http.post('/datahash/submit', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.textData, tags: this.textTags, token: this.recaptcha('hash')}).then(res => {
-          this.textData = ''
-          this.textTags = ''
-          this.typedData = res.data
-          // this.datahashesToggle('newest')
-          this.getDataHashes(this.routePath, this.datahashPage, this.datahashLimit)
-        }).catch(error => {
-          this.textData = ''
-          console.log(error)
-          this.feedback.post = 'error, try again next time'
-          setTimeout(() => {
-            this.feedback.post = ''
-          }, 4000)
-        })
-      }
+    submitText(token){
+      this.$http.post('/datahash/submit', {key: this.$store.getters.isLoggedIn ? this.$store.getters.account.key : '', text: this.textData, tags: this.textTags, token}).then(res => {
+        this.textData = ''
+        this.textTags = ''
+        this.typedData = res.data
+        // this.datahashesToggle('newest')
+        this.getDataHashes(this.routePath, this.datahashPage, this.datahashLimit)
+      }).catch(error => {
+        this.textData = ''
+        console.log(error)
+        this.feedback.post = 'error, try again next time'
+        setTimeout(() => {
+          this.feedback.post = ''
+        }, 4000)
+      })
     },
     getDataHashes(routePath, page, limit){
         this.$http.get('/datahash/' + routePath + '/' + page + '/' + limit).then(res => {
