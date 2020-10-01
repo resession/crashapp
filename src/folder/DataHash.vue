@@ -177,6 +177,7 @@ export default {
         this.getDataHashes(this.routePath, this.datahashPage, this.datahashLimit)
       }).catch(error => {
         this.textData = ''
+        this.textTags = ''
         console.log(error)
         this.feedback.post = 'error, try again next time'
         setTimeout(() => {
