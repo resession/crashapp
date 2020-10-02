@@ -68,8 +68,8 @@ export default {
             await this.$recaptchaLoaded()
 
             // Execute reCAPTCHA with action "login".
-            // const token = await this.$recaptcha('login')
-            return await this.$recaptcha(data)
+            const token = await this.$recaptcha(data)
+            // return await this.$recaptcha(data)
 
             // Do stuff with the received token.
             this.submitComment(token)
