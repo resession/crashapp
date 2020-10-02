@@ -208,8 +208,8 @@ export default {
       if(this.hashData){
         this.$http.get('/datahash/hash/' + this.hashData).then(res => {
           this.hashData = ''
-          // this.show.comment = false
-          // this.show.comments = false
+          this.show.comment = false
+          this.show.comments = false
           this.postData = res.data
           this.commentData = ''
           if(this.postData.comments){
