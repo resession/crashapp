@@ -57,7 +57,7 @@
   <hr class="my-5"/>
   <b-row align-h="center">
     <b-col cols="6">
-      <p style="font-size: 24px;font-weight: bold;">post something</p>
+      <p style="font-size: 24px;font-weight: bold;">make hash</p>
       <b-form @submit.prevent="recaptchaSubmitText('hash')">
           <b-form-textarea id="textarea" v-model="textData" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
           <b-form-input v-model="textTags" placeholder="OPTIONAL - keyword1,keyword2 - no spaces - 100 char limit" class="my-2" maxlength="100"></b-form-input>
